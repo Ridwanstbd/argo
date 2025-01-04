@@ -1,6 +1,6 @@
 # Sistem Kasir Argo Blastcoating
 
-Sistem Kasir Argo Blastcoating adalah aplikasi manajemen transaksi dan pembayaran berbasis web yang dikembangkan dengan PHP native untuk perusahaan jasa blastcoating. Aplikasi ini dirancang untuk memudahkan pencatatan transaksi, pengelolaan layanan, dan pengelolaan Barang
+Sistem Kasir Argo Blastcoating adalah aplikasi manajemen transaksi berbasis web yang dikembangkan dengan PHP native untuk perusahaan jasa blastcoating. Aplikasi ini dirancang untuk memudahkan pencatatan transaksi, pengelolaan layanan, dan pengelolaan Barang
 
 ## Fitur Utama
 
