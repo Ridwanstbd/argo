@@ -1,4 +1,5 @@
 <?php
+// pesanan.php
     require 'controllers/loginController.php';
     require 'controllers/pesananController.php';
     $query = pesanan();
@@ -18,7 +19,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap" rel="stylesheet">
 
     <title>Argo Blast Coating</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/dashboard.css">
     <link rel="stylesheet" href="assets/css/modal.css">
     <script src="assets/js/modal.js" defer></script>
@@ -110,7 +111,7 @@
                         <tr>
                             <td><?=$idPesanan?></td>
                             <td><?=$waktuPesan?></td>
-                            <td><?=$namaKlien?> - <?=$alamat?></td>
+                            <td><?=$namaKlien?></td>
                             <td><?=$status?></td>
                             <td class="action-cell">
                                 <a class="view-btn" href="#" onclick="openEditModal('<?=$idPesanan?>', '<?=$status?>', '<?=$waktuPesan?>')">Ubah</a>
@@ -157,6 +158,9 @@
                         <input type="datetime-local" name="twaktu" id="edit_waktu" class="form-input" required>
                     </div>
                     
+                    <div id="order_details" class="order-details-section">
+                        <!-- Content will be populated by JavaScript -->
+                    </div>                    
                     <div class="modal-footer">
                         <button type="submit" name="ubahpesanan" class="submit-btn">Simpan</button>
                         <button type="button" class="cancel-btn" data-modal-close>Batal</button>

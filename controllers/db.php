@@ -1,12 +1,5 @@
-<!-- db.php untuk Menghubungkan ke basis data -->
 <?php
-$isHostDb = 'localhost';
-$isUserDb = 'root';
-$isPassDb = '';
-$isNameDb = 'argo-blastcoating';
-$conn = mysqli_connect($isHostDb, $isUserDb, $isPassDb, $isNameDb);
-
+$conn = mysqli_connect("localhost", "root", "", "argo-blastcoating");
 if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+    die(json_encode(['error' => 'Database connection failed: ' . mysqli_connect_error()]));
 }
-?>

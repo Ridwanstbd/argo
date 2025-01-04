@@ -7,71 +7,6 @@
     
     $query_barang = "SELECT * FROM tb_barang";
     $result_barang = mysqli_query($conn, $query_barang);
-    
-    if(isset($_POST['submit'])) {
-        // Validasi CSRF token
-        if (!validateCSRFToken($_POST['csrf_token'])) {
-            die('CSRF token validation failed');
-        }
-        
-        $nama = sanitizeInput($_POST['nama']);
-        $no_hp = sanitizeInput($_POST['no_hp']);
-        $alamat = sanitizeInput($_POST['alamat']);
-        
-        // Escape string untuk database
-        $nama = mysqli_real_escape_string($conn, $nama);
-        $no_hp = mysqli_real_escape_string($conn, $no_hp);
-        $alamat = mysqli_real_escape_string($conn, $alamat);
-        
-        // Simpan data klien
-        $query_klien = "INSERT INTO tb_klien (nama, no_hp, alamat) VALUES (?, ?, ?)";
-        $stmt = mysqli_prepare($conn, $query_klien);
-        mysqli_stmt_bind_param($stmt, "sss", $nama, $no_hp, $alamat);
-        mysqli_stmt_execute($stmt);
-        $id_pemesan = mysqli_insert_id($conn);
-        
-        // Simpan data pesanan
-        $waktu_pesan = date('Y-m-d H:i:s');
-        $kstatus = 'Baru';
-        
-        $query_pesanan = "INSERT INTO tb_pesanan (id_pemesan, waktu_pesan, kstatus) VALUES (?, ?, ?)";
-        $stmt = mysqli_prepare($conn, $query_pesanan);
-        mysqli_stmt_bind_param($stmt, "iss", $id_pemesan, $waktu_pesan, $kstatus);
-        mysqli_stmt_execute($stmt);
-        $id_pesanan = mysqli_insert_id($conn);
-        
-        // Simpan detail pesanan
-        $barang = $_POST['barang'];
-        $jumlah = $_POST['jumlah'];
-        
-        $query_detail = "INSERT INTO tb_detailpesanan (id_pesanan, id_barang, jumlah, subtotal) VALUES (?, ?, ?, ?)";
-        $stmt = mysqli_prepare($conn, $query_detail);
-        
-        for($i = 0; $i < count($barang); $i++) {
-            $id_barang = (int)sanitizeInput($barang[$i]);
-            $jml = (int)sanitizeInput($jumlah[$i]);
-            
-            // Ambil harga barang
-            $query_harga = "SELECT harga FROM tb_barang WHERE id_barang = ?";
-            $stmt_harga = mysqli_prepare($conn, $query_harga);
-            mysqli_stmt_bind_param($stmt_harga, "i", $id_barang);
-            mysqli_stmt_execute($stmt_harga);
-            $result = mysqli_stmt_get_result($stmt_harga);
-            $row = mysqli_fetch_assoc($result);
-            $harga = $row['harga'];
-            
-            $subtotal = $harga * $jml;
-            
-            mysqli_stmt_bind_param($stmt, "iiid", $id_pesanan, $id_barang, $jml, $subtotal);
-            mysqli_stmt_execute($stmt);
-        }
-        
-        // Refresh CSRF token
-        refreshCSRFToken();
-        
-        echo "<script>alert('Pesanan berhasil disimpan, Kami akan Menghubungi Kamu !'); window.location.href = 'index.php';</script>";
-        exit();
-    }
 ?>
 
 <!DOCTYPE html>
@@ -129,6 +64,11 @@
             border-top: 2px solid #ddd;
             padding-top: 10px;
         }
+        .subtotal-display {
+            font-weight: bold;
+            margin-top: 5px;
+            color: #28a745;
+        }
     </style>
 </head>
 
@@ -144,7 +84,7 @@
                                     <h1 class="mb-4">Buat Pesanan Baru</h1>
                                 </div>
                                 
-                                <form method="POST" class="user form-pesanan">
+                                <form method="POST" action="process_order.php" class="user form-pesanan">
                                     <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
                                     
                                     <h4 class="mb-3">Data Diri</h4>
@@ -178,7 +118,12 @@
                                                 <?php } ?>
                                             </select>
                                             <input type="number" name="jumlah[]" class="form-control" 
-                                                placeholder="Jumlah" required min="1" onchange="hitungTotal()" onkeyup="hitungTotal()">
+                                                placeholder="Jumlah" required min="1" 
+                                                onchange="hitungSubtotal(this.parentElement)" 
+                                                onkeyup="hitungSubtotal(this.parentElement)">
+                                            <textarea name="catatan[]" class="form-control" 
+                                                placeholder="Catatan untuk pesanan (opsional)"></textarea>
+                                            <div class="subtotal-display">Subtotal: Rp 0</div>
                                         </div>
                                     </div>
                                     
@@ -220,11 +165,31 @@
                 <?php } ?>
             </select>
             <input type="number" name="jumlah[]" class="form-control" 
-                placeholder="Jumlah" required min="1" onchange="hitungTotal()" onkeyup="hitungTotal()">
+                placeholder="Jumlah" required min="1" 
+                onchange="hitungSubtotal(this.parentElement)" 
+                onkeyup="hitungSubtotal(this.parentElement)">
+            <textarea name="catatan[]" class="form-control" 
+                placeholder="Catatan untuk pesanan (opsional)"></textarea>
+            <div class="subtotal-display">Subtotal: Rp 0</div>
             <button type="button" class="btn-hapus" onclick="this.parentElement.remove(); hitungTotal()">
                 Hapus</button>
         `;
         container.appendChild(div);
+    }
+
+    function hitungSubtotal(container) {
+        const select = container.querySelector('select');
+        const jumlah = container.querySelector('input[type="number"]').value || 0;
+        const option = select.options[select.selectedIndex];
+        let subtotal = 0;
+        
+        if(option && option.dataset.harga) {
+            subtotal = option.dataset.harga * jumlah;
+        }
+        
+        container.querySelector('.subtotal-display').textContent = 
+            'Subtotal: Rp ' + subtotal.toLocaleString('id-ID');
+        hitungTotal();
     }
 
     function hitungTotal() {

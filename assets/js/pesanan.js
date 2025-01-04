@@ -1,11 +1,112 @@
-function openEditModal(id, status, waktu) {
+async function handleAPIError(response) {
+  const contentType = response.headers.get("content-type");
+  if (contentType && contentType.includes("application/json")) {
+    const error = await response.json();
+    throw new Error(error.error || "Unknown error occurred");
+  } else {
+    const text = await response.text();
+    console.error("Non-JSON response:", text);
+    throw new Error("Invalid server response");
+  }
+}
+
+async function openEditModal(id, status, waktu) {
   const modal = document.querySelector("#editPesanan");
 
   document.getElementById("edit_idpesanan").value = id;
   document.getElementById("edit_status").value = status;
-  document.getElementById("edit_waktu").value = waktu.replace(" ", "T"); // Convert MySQL datetime to HTML datetime-local
+  const formattedWaktu = waktu.substring(0, 16);
+  document.getElementById("edit_waktu").value = formattedWaktu;
+
+  // Fetch order details
+  try {
+    const formData = new FormData();
+    formData.append("id_pesanan", id);
+    formData.append(
+      "csrf_token",
+      document.querySelector('input[name="csrf_token"]').value
+    );
+
+    const response = await fetch("get_order_details.php", {
+      // Updated URL
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      await handleAPIError(response);
+    }
+
+    const data = await response.json();
+
+    // Update order details in modal
+    const detailsContainer = document.getElementById("order_details");
+    detailsContainer.innerHTML = `
+      <div class="customer-details">
+        <h5 class="detail-section-title">Data Pelanggan</h5>
+        <table class="detail-table">
+          <tr>
+            <td><strong>Nama</strong></td>
+            <td>: ${data.order.nama}</td>
+          </tr>
+          <tr>
+            <td><strong>No HP</strong></td>
+            <td>: ${data.order.no_hp}</td>
+          </tr>
+          <tr>
+            <td><strong>Alamat</strong></td>
+            <td>: ${data.order.alamat}</td>
+          </tr>
+        </table>
+      </div>
+      
+      <div class="order-items">
+        <h5 class="detail-section-title">Detail Pesanan</h5>
+        <div class="items-table">
+          <table class="detail-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Layanan</th>
+                <th>Jumlah</th>
+                <th>Harga</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${data.items
+                .map(
+                  (item) => `
+                <tr>
+                  <td>${item.nama_barang}</td>
+                  <td>${item.layanan}</td>
+                  <td>${item.jumlah}</td>
+                  <td>Rp ${formatNumber(item.harga)}</td>
+                  <td>Rp ${formatNumber(item.subtotal)}</td>
+                </tr>
+              `
+                )
+                .join("")}
+            </tbody>
+          </table>
+        </div>
+        <div class="total">
+          <strong>Total:</strong> Rp ${formatNumber(
+            data.items.reduce((sum, item) => sum + parseFloat(item.subtotal), 0)
+          )}
+        </div>
+      </div>
+    `;
+  } catch (error) {
+    console.error("Error fetching order details:", error);
+    alert("Gagal mengambil detail pesanan");
+  }
 
   window.modalSystem.openModal(modal);
+}
+
+function formatNumber(num) {
+  return new Intl.NumberFormat("id-ID").format(num);
 }
 
 function confirmDelete(id) {

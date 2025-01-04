@@ -173,8 +173,57 @@ html {
   padding: 10px;
 }
 
-@media (max-width: 768px) {
+/* Add to your existing CSS file */
+.order-details-section {
+  margin-top: 20px;
+  padding: 15px;
+  border-top: 1px solid #ddd;
 }
+
+.detail-section-title {
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #333;
+}
+
+.detail-table {
+  width: 100%;
+  margin-bottom: 20px;
+  border-collapse: collapse;
+}
+
+.detail-table th,
+.detail-table td {
+  padding: 8px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.detail-table th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.customer-details .detail-table td:first-child {
+  width: 100px;
+  font-weight: normal;
+}
+
+.total {
+  text-align: right;
+  font-weight: bold;
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 2px solid #ddd;
+}
+
+/* Ensure modal can accommodate the additional content */
+.modal-content {
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
 /* Footer Styles */
 .footer {
   background-color: white;
@@ -187,6 +236,10 @@ html {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .detail-table {
+    display: block;
+    overflow-x: auto;
+  }
   .nav-menu {
     display: none;
   }
