@@ -51,8 +51,15 @@ html {
 }
 
 .col-lg-6 {
-  flex: 0 0 100%;
-  max-width: 100%;
+  flex: 0 0 50%;
+  max-width: 50%;
+}
+
+@media (max-width: 768px) {
+  .col-lg-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
 }
 
 /* Padding utilities */
@@ -164,5 +171,32 @@ hr {
 }
 
 /* Responsive layout */
-@media (min-width: 992px) {
+@media (max-width: 1200px) {
+  .container {
+    margin: 0 4rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .container {
+    margin: 0 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    margin: 0 1rem;
+  }
+  .card-body {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .card-body {
+    padding: 1rem;
+  }
+  .btn {
+    font-size: 0.875rem;
+  }
 }

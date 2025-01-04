@@ -57,7 +57,7 @@ http://localhost/kasir-argo-blastcoating
 1. Login ke sistem menggunakan kredensial default:
 
    - Username: test
-   - Password: 12345678
+   - Password: password
 
 2. Fitur yang tersedia:
    - Pesanan : edit, hapus pesanan

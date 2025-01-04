@@ -1,3 +1,4 @@
+/* Global Styles */
 * {
   margin: 0;
   padding: 0;
@@ -7,9 +8,11 @@
   text-decoration: none;
   font-family: "Racing Sans One", cursive;
 }
+
 html {
   scroll-behavior: smooth;
 }
+
 /* Navbar Styles */
 .navbar {
   background-color: #198754;
@@ -45,6 +48,16 @@ html {
   color: #e9ecef;
 }
 
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  color: white;
+  font-size: 1.25rem;
+}
+
 /* Container */
 .container {
   max-width: 1200px;
@@ -54,7 +67,9 @@ html {
 
 .page-title {
   color: #333;
+  font-size: 2rem;
   margin-bottom: 2rem;
+  text-align: center;
 }
 
 /* Card Styles */
@@ -164,66 +179,6 @@ html {
   cursor: pointer;
 }
 
-/* Navbar toggle styles */
-.nav-toggle {
-  display: none;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 10px;
-}
-
-/* Add to your existing CSS file */
-.order-details-section {
-  margin-top: 20px;
-  padding: 15px;
-  border-top: 1px solid #ddd;
-}
-
-.detail-section-title {
-  margin-bottom: 10px;
-  font-weight: bold;
-  color: #333;
-}
-
-.detail-table {
-  width: 100%;
-  margin-bottom: 20px;
-  border-collapse: collapse;
-}
-
-.detail-table th,
-.detail-table td {
-  padding: 8px;
-  border: 1px solid #ddd;
-  text-align: left;
-}
-
-.detail-table th {
-  background-color: #f5f5f5;
-  font-weight: bold;
-}
-
-.customer-details .detail-table td:first-child {
-  width: 100px;
-  font-weight: normal;
-}
-
-.total {
-  text-align: right;
-  font-weight: bold;
-  margin-top: 15px;
-  padding-top: 10px;
-  border-top: 2px solid #ddd;
-}
-
-/* Ensure modal can accommodate the additional content */
-.modal-content {
-  max-width: 800px;
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
 /* Footer Styles */
 .footer {
   background-color: white;
@@ -235,35 +190,66 @@ html {
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
-  .detail-table {
-    display: block;
-    overflow-x: auto;
-  }
-  .nav-menu {
-    display: none;
-  }
-
-  .nav-menu.active {
-    display: block;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background-color: #198754;
-    padding: 1rem;
-  }
-
-  .nav-list {
-    flex-direction: column;
-    gap: 1rem;
+@media (max-width: 992px) {
+  .nav-container {
+    flex-wrap: wrap;
   }
 
   .card-content {
     flex-direction: column;
-    gap: 1rem;
+    align-items: flex-start;
   }
+}
+
+@media (max-width: 768px) {
+  .nav-list {
+    display: none;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    background-color: #198754;
+    padding: 1rem;
+    position: absolute;
+    top: 100%;
+    left: 0;
+  }
+
+  .nav-list.active {
+    display: flex;
+  }
+
   .nav-toggle {
     display: block;
+  }
+
+  .card-content {
+    text-align: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .card-value {
+    font-size: 1.25rem;
+  }
+
+  .add-button {
+    font-size: 0.875rem;
+  }
+
+  .view-btn,
+  .delete-btn {
+    font-size: 0.75rem;
   }
 }
